@@ -1,11 +1,10 @@
 package com.inditex.myapp.domain.service;
 
 import com.inditex.myapp.domain.model.ProductDetail;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface ProductService {
 
-    List<ProductDetail> productSimilar(String productId);
+    Flux<ProductDetail> productSimilar(String productId);
 
 }

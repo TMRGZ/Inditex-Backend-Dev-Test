@@ -3,35 +3,26 @@ package com.inditex.myapp.domain.service.impl;
 import com.inditex.myapp.domain.model.ProductDetail;
 import com.inditex.myapp.domain.service.ExistingApiService;
 import com.inditex.myapp.domain.service.ProductService;
+import lombok.AllArgsConstructor;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ExistingApiService existingApiService;
 
-    public ProductServiceImpl(ExistingApiService existingApiService) {
-        this.existingApiService = existingApiService;
-    }
-
     @Override
-    public List<ProductDetail> productSimilar(String productId) {
-        List<String> similarProductIds = getSimilarProductIds(productId);
-        return getProductDetail(similarProductIds);
+    public Flux<ProductDetail> productSimilar(String productId) {
+        return getSimilarProductIds(productId)
+                .flatMap(this::getProductDetail);
     }
 
-    private List<String> getSimilarProductIds(String productId) {
+    private Flux<String> getSimilarProductIds(String productId) {
         return existingApiService.getSimilarProducts(productId);
     }
 
-    private ProductDetail getProductDetail(String productId) {
+    private Mono<ProductDetail> getProductDetail(String productId) {
         return existingApiService.getProduct(productId);
-    }
-
-    private List<ProductDetail> getProductDetail(List<String> productIdList) {
-        return productIdList.stream()
-                .map(this::getProductDetail)
-                .collect(Collectors.toList());
     }
 }

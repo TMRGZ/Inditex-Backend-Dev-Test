@@ -1,13 +1,13 @@
 package com.inditex.myapp.domain.service;
 
 import com.inditex.myapp.domain.model.ProductDetail;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface ExistingApiService {
 
-    ProductDetail getProduct(String productId);
+    Mono<ProductDetail> getProduct(String productId);
 
-    List<String> getSimilarProducts(String productId);
+    Flux<String> getSimilarProducts(String productId);
 
 }
