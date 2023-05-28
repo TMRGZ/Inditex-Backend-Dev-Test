@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ExistingApiServiceImpl implements ExistingApiService {
     public Mono<ProductDetail> getProduct(String productId) {
         return defaultApi.getProductProductId(productId)
                 .delayElement(Duration.ofSeconds(1))
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.error(ProductNotFoundException::new))
                 .onErrorResume(WebClientResponseException.InternalServerError.class, internalServerError -> Mono.error(ExistingApisErrorException::new))
                 .map(inputProductDetailMapper::map);
@@ -43,6 +45,8 @@ public class ExistingApiServiceImpl implements ExistingApiService {
     @Override
     public Flux<String> getSimilarProducts(String productId) {
         return defaultApi.getProductSimilarids(productId)
+                .delayElements(Duration.ofSeconds(1))
+                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Flux.error(ProductNotFoundException::new))
                 .onErrorResume(WebClientResponseException.InternalServerError.class, internalServerError -> Flux.error(ExistingApisErrorException::new))
                 .flatMapIterable(this::mapToFlux);
