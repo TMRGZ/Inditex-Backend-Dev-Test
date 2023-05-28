@@ -1,9 +1,9 @@
-server:
-  port: 5000
-
+spring:
+  main:
+    web-application-type: reactive
 endpoints:
-  existingApi:
-    url: ${endpoints.existingApi.givenUrl:${endpoints.existingApi.formedUrl}}
-    formedUrl: ${endpoints.existingApi.basePath}:${endpoints.existingApi.port}
-    basePath: http://localhost
+  existing-api:
+    url: ${endpoints.existing-api.givenUrl:${endpoints.existing-api.formed-url}}
+    formed-url: ${endpoints.existing-api.base-path}:${endpoints.existing-api.port}
+    base-path: http://localhost
     port: ${wiremock.server.port}

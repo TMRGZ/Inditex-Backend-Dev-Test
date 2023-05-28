@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ServerWebExchange;
 
 @ExtendWith(MockitoExtension.class)
 class ProductApiImplUnitTest {
@@ -20,7 +21,7 @@ class ProductApiImplUnitTest {
 
     @Test
     void getProductSimilarUnitTest() {
-        productApi.getProductSimilar("TEST");
+        productApi.getProductSimilar("TEST", Mockito.mock(ServerWebExchange.class));
 
         Mockito.verify(productApplicationService).getProductSimilar(Mockito.anyString());
     }

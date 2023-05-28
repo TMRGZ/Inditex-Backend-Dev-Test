@@ -1,6 +1,5 @@
 package unit.com.inditex.myapp.infrastructure.config;
 
-import com.inditex.myapp.domain.service.ExistingApiService;
 import com.inditex.myapp.infrastructure.config.BeanConfig;
 import com.inditex.myapp.infrastructure.config.endpoint.EndpointsConfig;
 import com.inditex.myapp.infrastructure.config.endpoint.ExistingApiEndpointConfig;

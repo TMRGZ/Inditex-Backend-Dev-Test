@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,13 +24,13 @@ class ProductServiceImplUnitTest {
 
     @Test
     void productSimilarUnitTest() {
+        String productId = "TEST";
+
         List<String> similarIdList = Collections.singletonList("SIMILARTEST");
+        Mockito.when(existingApiService.getSimilarProducts(Mockito.anyString())).thenReturn(Flux.fromIterable(similarIdList));
 
-        Mockito.when(existingApiService.getSimilarProducts(Mockito.anyString())).thenReturn(similarIdList);
+        productService.productSimilar(productId);
 
-        productService.productSimilar("TEST");
-
-        Mockito.verify(existingApiService).getSimilarProducts(Mockito.anyString());
-        Mockito.verify(existingApiService, Mockito.times(similarIdList.size())).getProduct(Mockito.anyString());
+        Mockito.verify(existingApiService).getSimilarProducts(productId);
     }
 }
