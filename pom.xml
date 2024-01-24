@@ -14,7 +14,8 @@
     <name>myApp</name>
     <description>myApp</description>
     <properties>
-        <java.version>19</java.version>
+        <java.version>17</java.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
 
     <dependencies>
