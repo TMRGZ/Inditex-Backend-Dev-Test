@@ -19,11 +19,6 @@ public class BeanConfig {
     }
 
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
-
-    @Bean
     public DefaultApi defaultApi(EndpointsConfig endpointsConfig) {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(endpointsConfig.getExistingApi().getUrl());

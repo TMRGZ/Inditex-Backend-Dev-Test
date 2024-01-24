@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
+import java.util.function.Function;
+
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
@@ -15,10 +18,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Flux<ProductDetail> productSimilar(String productId) {
         return getSimilarProductIds(productId)
+                .flatMapIterable(Function.identity())
                 .flatMap(this::getProductDetail);
     }
 
-    private Flux<String> getSimilarProductIds(String productId) {
+    private Mono<Set<String>> getSimilarProductIds(String productId) {
         return existingApiService.getSimilarProducts(productId);
     }
 

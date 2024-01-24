@@ -20,6 +20,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Set;
+
 @ExtendWith(MockitoExtension.class)
 class ExistingApiServiceImplUnitTest {
 
@@ -74,9 +76,9 @@ class ExistingApiServiceImplUnitTest {
 
     @Test
     void getSimilarProductsUnitTest() {
-        Mockito.when(defaultApi.getProductSimilarids(Mockito.anyString())).thenReturn(Flux.empty());
+        Mockito.when(defaultApi.getProductSimilarids(Mockito.anyString())).thenReturn(Mono.empty());
 
-        Flux<String> similarProducts = existingApiService.getSimilarProducts("TEST");
+        Mono<Set<String>> similarProducts = existingApiService.getSimilarProducts("TEST");
 
         Assertions.assertNotNull(similarProducts);
         Mockito.verify(defaultApi).getProductSimilarids(Mockito.any());
@@ -87,9 +89,9 @@ class ExistingApiServiceImplUnitTest {
         String productId = "TEST";
 
         Mockito.when(defaultApi.getProductSimilarids(productId))
-                .thenReturn(Flux.error(WebClientResponseException.create(HttpStatus.NOT_FOUND.value(), "", null, null, null)));
+                .thenReturn(Mono.error(WebClientResponseException.create(HttpStatus.NOT_FOUND.value(), "", null, null, null)));
 
-        Flux<String> idFlux = existingApiService.getSimilarProducts(productId);
+        var idFlux = existingApiService.getSimilarProducts(productId);
 
         StepVerifier.create(idFlux)
                 .expectNext()
@@ -102,9 +104,9 @@ class ExistingApiServiceImplUnitTest {
         String productId = "TEST";
 
         Mockito.when(defaultApi.getProductSimilarids(productId))
-                .thenReturn(Flux.error(WebClientResponseException.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), "", null, null, null)));
+                .thenReturn(Mono.error(WebClientResponseException.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), "", null, null, null)));
 
-        Flux<String> idFlux = existingApiService.getSimilarProducts(productId);
+        var idFlux = existingApiService.getSimilarProducts(productId);
 
         StepVerifier.create(idFlux)
                 .expectNext()

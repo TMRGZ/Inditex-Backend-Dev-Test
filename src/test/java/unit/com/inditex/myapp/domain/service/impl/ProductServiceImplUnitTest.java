@@ -9,9 +9,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplUnitTest {
@@ -26,8 +28,8 @@ class ProductServiceImplUnitTest {
     void productSimilarUnitTest() {
         String productId = "TEST";
 
-        List<String> similarIdList = Collections.singletonList("SIMILARTEST");
-        Mockito.when(existingApiService.getSimilarProducts(Mockito.anyString())).thenReturn(Flux.fromIterable(similarIdList));
+        Set<String> similarIdList = Set.of("SIMILARTEST");
+        Mockito.when(existingApiService.getSimilarProducts(Mockito.anyString())).thenReturn(Mono.just(similarIdList));
 
         productService.productSimilar(productId);
 

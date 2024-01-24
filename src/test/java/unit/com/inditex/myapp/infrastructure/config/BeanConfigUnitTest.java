@@ -23,11 +23,6 @@ class BeanConfigUnitTest {
     }
 
     @Test
-    void restTemplateUnitTest() {
-        Assertions.assertNotNull(beanConfig.restTemplate());
-    }
-
-    @Test
     void defaultApiUnitTest() {
         EndpointsConfig endpointsConfig = new EndpointsConfig();
         endpointsConfig.setExistingApi(new ExistingApiEndpointConfig());

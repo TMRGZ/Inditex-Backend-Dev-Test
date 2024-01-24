@@ -10,6 +10,7 @@ import com.inditex.myapp.infrastructure.exception.ExistingApisErrorException;
 import com.inditex.myapp.infrastructure.exception.ProductNotFoundException;
 import com.inditex.myapp.infrastructure.mapper.InputProductDetailMapper;
 import com.inditex.myapp.infrastructure.rest.DefaultApi;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -19,44 +20,28 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ExistingApiServiceImpl implements ExistingApiService {
 
-    @Autowired
-    private DefaultApi defaultApi;
+    private final DefaultApi defaultApi;
 
-    @Autowired
-    private InputProductDetailMapper inputProductDetailMapper;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final InputProductDetailMapper inputProductDetailMapper;
 
     @Override
     public Mono<ProductDetail> getProduct(String productId) {
         return defaultApi.getProductProductId(productId)
-                .delayElement(Duration.ofSeconds(1))
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
                 .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.error(ProductNotFoundException::new))
                 .onErrorResume(WebClientResponseException.InternalServerError.class, internalServerError -> Mono.error(ExistingApisErrorException::new))
                 .map(inputProductDetailMapper::map);
     }
 
     @Override
-    public Flux<String> getSimilarProducts(String productId) {
+    public Mono<Set<String>> getSimilarProducts(String productId) {
         return defaultApi.getProductSimilarids(productId)
-                .delayElements(Duration.ofSeconds(1))
-                .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(5)))
-                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Flux.error(ProductNotFoundException::new))
-                .onErrorResume(WebClientResponseException.InternalServerError.class, internalServerError -> Flux.error(ExistingApisErrorException::new))
-                .flatMapIterable(this::mapToFlux);
-    }
-
-    private List<String> mapToFlux(String s) {
-        try {
-            return objectMapper.readValue(s, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
-        } catch (JsonProcessingException e) {
-            throw new MyAppException(e);
-        }
+                .onErrorMap(WebClientResponseException.NotFound.class, ProductNotFoundException::new)
+                .onErrorMap(WebClientResponseException.InternalServerError.class, ExistingApisErrorException::new);
     }
 }

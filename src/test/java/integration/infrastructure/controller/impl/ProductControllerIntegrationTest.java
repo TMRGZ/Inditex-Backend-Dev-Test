@@ -29,7 +29,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 @AutoConfigureWebTestClient
 @AutoConfigureWireMock(port = 0)
 @SpringBootTest(classes = MyAppApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProductApiImplIntegrationTest {
+class ProductControllerIntegrationTest {
 
     private static final String SIMILAR_PRODUCTS_URL = "/product/{productId}/similar";
     private static final String EXISTING_API_SIMILAR_PRODUCTS_URL = "/product/{productId}/similarids";
