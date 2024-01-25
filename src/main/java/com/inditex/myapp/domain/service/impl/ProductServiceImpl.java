@@ -1,6 +1,7 @@
 package com.inditex.myapp.domain.service.impl;
 
 import com.inditex.myapp.domain.model.ProductDetail;
+import com.inditex.myapp.domain.repository.ReactiveProductDetailRepository;
 import com.inditex.myapp.domain.service.ExistingApiService;
 import com.inditex.myapp.domain.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -15,11 +16,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ExistingApiService existingApiService;
 
+    private final ReactiveProductDetailRepository productDetailRepository;
+
     @Override
     public Flux<ProductDetail> productSimilar(String productId) {
         return getSimilarProductIds(productId)
                 .flatMapIterable(Function.identity())
-                .flatMap(this::getProductDetail);
+                .flatMap(this::getProductDetail)
+                .flatMap(productDetailRepository::save);
     }
 
     private Mono<Set<String>> getSimilarProductIds(String productId) {

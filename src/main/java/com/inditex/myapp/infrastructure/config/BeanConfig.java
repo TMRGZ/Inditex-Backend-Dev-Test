@@ -1,5 +1,6 @@
 package com.inditex.myapp.infrastructure.config;
 
+import com.inditex.myapp.domain.repository.ReactiveProductDetailRepository;
 import com.inditex.myapp.domain.service.ExistingApiService;
 import com.inditex.myapp.domain.service.ProductService;
 import com.inditex.myapp.domain.service.impl.ProductServiceImpl;
@@ -14,8 +15,8 @@ import org.springframework.web.client.RestTemplate;
 public class BeanConfig {
 
     @Bean
-    public ProductService productService(ExistingApiService existingApiService) {
-        return new ProductServiceImpl(existingApiService);
+    public ProductService productService(ExistingApiService existingApiService, ReactiveProductDetailRepository productDetailRepository) {
+        return new ProductServiceImpl(existingApiService, productDetailRepository);
     }
 
     @Bean
