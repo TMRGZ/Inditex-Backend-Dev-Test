@@ -8,15 +8,18 @@ import com.inditex.myapp.infrastructure.exception.ExistingApisErrorException;
 import com.inditex.myapp.infrastructure.exception.ProductNotFoundException;
 import com.inditex.myapp.infrastructure.mapper.InputProductDetailMapper;
 import com.inditex.myapp.infrastructure.rest.DefaultApi;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class ExistingApiServiceImpl implements ExistingApiService {
 
     @Autowired
@@ -33,7 +36,7 @@ public class ExistingApiServiceImpl implements ExistingApiService {
             productDetailResponse = defaultApi.getProductProductId(productId);
         } catch (HttpClientErrorException e) {
             throw new ProductNotFoundException(e.getMessage());
-        } catch (HttpServerErrorException e) {
+        } catch (RestClientException e) {
             throw new ExistingApisErrorException(e.getMessage());
         }
 
@@ -48,7 +51,7 @@ public class ExistingApiServiceImpl implements ExistingApiService {
             productSimilaridSet = defaultApi.getProductSimilarids(productId);
         } catch (HttpClientErrorException e) {
             throw new ProductNotFoundException(e.getMessage());
-        } catch (HttpServerErrorException e) {
+        } catch (RestClientException e) {
             throw new ExistingApisErrorException(e.getMessage());
         }
 

@@ -1,19 +1,20 @@
 package com.inditex.myapp.domain.service.impl;
 
 import com.inditex.myapp.domain.model.ProductDetail;
+import com.inditex.myapp.domain.repository.ProductDetailRepository;
 import com.inditex.myapp.domain.service.ExistingApiService;
 import com.inditex.myapp.domain.service.ProductService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ExistingApiService existingApiService;
 
-    public ProductServiceImpl(ExistingApiService existingApiService) {
-        this.existingApiService = existingApiService;
-    }
+    private final ProductDetailRepository productDetailRepository;
 
     @Override
     public List<ProductDetail> productSimilar(String productId) {
@@ -30,8 +31,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private List<ProductDetail> getProductDetail(List<String> productIdList) {
-        return productIdList.stream()
+        List<ProductDetail> collect = productIdList.stream()
                 .map(this::getProductDetail)
-                .collect(Collectors.toList());
+                .toList();
+
+        return productDetailRepository.saveAll(collect);
     }
 }

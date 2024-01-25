@@ -20,7 +20,7 @@ class BeanConfigUnitTest {
 
     @Test
     void productServiceUnitTest() {
-        Assertions.assertNotNull(beanConfig.productService(Mockito.mock(ExistingApiServiceImpl.class)));
+        Assertions.assertNotNull(beanConfig.productService(Mockito.mock(ExistingApiServiceImpl.class), null));
     }
 
     @Test
